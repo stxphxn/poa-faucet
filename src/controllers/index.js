@@ -1,6 +1,7 @@
 /* eslint-disable no-shadow */
 // const EthereumTx = require('ethereumjs-tx');
-const Transaction = require('@catalyst-net-js/tx');
+const Transaction = require('@catalyst-net-js/tx').default;
+const { bytesFromBase32String, hexStringFromBytes } = require('@catalyst-net-js/common');
 const { generateErrorResponse } = require('../helpers/generate-response');
 const { validateCaptcha } = require('../helpers/captcha-helper');
 const { debug } = require('../helpers/debug');
@@ -17,10 +18,11 @@ module.exports = function (app) {
   };
 
   async function validateCaptchaResponse(captchaResponse, receiver, response) {
-    if (!captchaResponse || !captchaResponse.success) {
-      generateErrorResponse(response, { message: messages.INVALID_CAPTCHA });
-      return false;
-    }
+    console.log(captchaResponse, response.output);
+    // if (!captchaResponse || !captchaResponse.success) {
+    //   generateErrorResponse(response, { message: messages.INVALID_CAPTCHA });
+    //   return false;
+    // }
 
     return true;
   }
@@ -40,7 +42,7 @@ module.exports = function (app) {
 
   async function sendPOAToRecipient(web3, receiver, response, isDebug) {
     const senderPrivateKey = config.Ethereum[config.environment].privateKey;
-    const privateKeyHex = Buffer.from(senderPrivateKey, 'hex');
+    const privateKeyHex = bytesFromBase32String(senderPrivateKey);
     if (!web3.utils.isAddress(receiver)) {
       return generateErrorResponse(response, { message: messages.INVALID_ADDRESS });
     }
@@ -67,13 +69,13 @@ module.exports = function (app) {
     const serializedTx = tx.serialize();
 
     let txHash;
-    web3.eth.sendSignedTransaction(`0x${serializedTx.toString('hex')}`)
+    web3.eth.sendSignedTransaction(`0x${hexStringFromBytes(serializedTx)}`)
       .on('transactionHash', (_txHash) => {
         txHash = _txHash;
       })
       .on('receipt', (receipt) => {
         debug(isDebug, receipt);
-        if (receipt.status === '0x1') {
+        if (receipt.status === '0x1' || receipt.status === true) {
           return sendRawTransactionResponse(txHash, response);
         }
         const error = {
