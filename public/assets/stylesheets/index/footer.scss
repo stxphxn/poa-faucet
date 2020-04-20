@@ -3,7 +3,6 @@
   position: absolute;
   bottom: 0;
   height: $footer-height;
-  background-image: url(../images/bg_footer.png);
   background-size: cover;
   background-position: center center;
   color: #fff;
@@ -18,15 +17,8 @@
 
   .logo,
   .socials {
-    transform: translateY(-50%);
-    position: absolute;
-    z-index: 1;
-    top: 50%;
-
-    @media screen and (max-width: $tablet-width) {
-      transform: translate(0);
-      top: 20px;
-    }
+  margin: auto;
+  text-align: center;
   }
 
   .logo {
@@ -53,8 +45,5 @@
     }
   }
 
-  .socials {
-    right: 0;
-  }
 }
 

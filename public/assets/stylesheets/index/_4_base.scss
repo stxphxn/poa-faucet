@@ -2,6 +2,7 @@ html,
 body {
   margin: 0;
   padding: 0;
+  background: #0a2d3e;
 }
 
 p, h1, h2, h3, h4 {
@@ -35,12 +36,13 @@ body {
 .container {
   max-width: 960px;
   margin: 0 auto;
+  display: flex;
 }
 
 .content {
   display: table-cell;
   vertical-align: middle;
-  background-color: #fbfbfb;
+  background-color: #0a2d3e;
   text-align: center;
 }
 
